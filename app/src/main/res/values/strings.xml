@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Pizza Fjoset</string>
+    <string name="back_button">Tilbake</string>
+    <string name="details">Detaljer</string>
+    <string name="cart">Handlekurv</string>
+    <string name="checkout">Kasse</string>
+    <string name="contact">Kontakt</string>
+    <string name="menu">Meny</string>
+    <string name="about">Om oss</string>
+    <string name="home">Home</string>
+    <string name="meals">Retter</string>
+    <string name="profile">Min konto</string>
+    <string name="login">Logg inn</string>
+    <string name="favorites">Favoritter</string>
+    <string name="add">Legg til</string>
+    <string name="remove">Slett</string>
+</resources>
