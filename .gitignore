@@ -1,10 +1,11 @@
-# === Gradle og bygg ===
 .gradle/
 **/build/
 **/out/
 .cxx/
 .externalNativeBuild/
 local.properties
+local.defaults.properties
+secrets.properties
 
 *.iml
 .idea/
