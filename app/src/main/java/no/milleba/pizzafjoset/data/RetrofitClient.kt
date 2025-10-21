@@ -1,6 +1,7 @@
 package no.milleba.pizzafjoset.data
 
 import no.milleba.pizzafjoset.model.MealApi
+import no.milleba.pizzafjoset.model.OrderApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -18,12 +19,21 @@ object RetrofitClient {
             .build()
     }
 
-    val api: MealApi by lazy {
+    val mealApi: MealApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(MealApi::class.java)
+    }
+
+    val orderApi: OrderApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(httpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(OrderApi::class.java)
     }
 }

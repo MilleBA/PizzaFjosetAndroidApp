@@ -1,5 +1,6 @@
 package no.milleba.pizzafjoset.model
 
+import okhttp3.ResponseBody
 import retrofit2.http.*
 
 data class Meal(
@@ -19,9 +20,12 @@ interface MealApi {
     @GET("api/meals")
     suspend fun getMeals(): MealResponse
 
-    @POST("api/meals")
-    suspend fun createMeal(@Body meal: Meal): Map<String, String>
+    @GET("api/meals/{_id}")
+    suspend fun getMeal(@Path("_id") id: String): Meal
 
-    @DELETE("api/meals")
-    suspend fun deleteMeal(@Query("id") id: String): Map<String, String>
+    @POST("api/meals")
+    suspend fun createMeal(@Body meal: Meal): ResponseBody
+
+    @DELETE("api/meals/{_id}")
+    suspend fun deleteMeal(@Query("_id") id: String): ResponseBody
 }

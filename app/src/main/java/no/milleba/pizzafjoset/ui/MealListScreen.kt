@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -52,10 +53,12 @@ import no.milleba.pizzafjoset.data.RetrofitClient
 import no.milleba.pizzafjoset.model.Meal
 import no.milleba.pizzafjoset.ui.components.AddButton
 import no.milleba.pizzafjoset.ui.components.Categories
+import no.milleba.pizzafjoset.ui.components.Category
 import no.milleba.pizzafjoset.ui.theme.PizzaFjosetAppTheme
 import no.milleba.pizzafjoset.ui.theme.errorContainerDark
 import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
 import no.milleba.pizzafjoset.ui.theme.primaryDarkMediumContrast
+import no.milleba.pizzafjoset.ui.utils.drawableIdFromApiPath
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,11 +68,10 @@ fun MealListScreen(
     var meals by remember { mutableStateOf<List<Meal>>(emptyList()) }
     var error by remember { mutableStateOf<String?>(null) }
     var selected by remember { mutableStateOf<Meal?>(null) }
-
-
+    var selectedCategory by remember { mutableStateOf<Category?>(Category.PIZZA) }
 
     LaunchedEffect(Unit) {
-        runCatching { RetrofitClient.api.getMeals() }
+        runCatching { RetrofitClient.mealApi.getMeals() }
             .onSuccess { resp -> meals = resp.meals }
             .onFailure { e -> error = e.message }
     }
@@ -77,16 +79,25 @@ fun MealListScreen(
     when {
         error != null -> Text("Feil: $error")
         meals.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Ingen måltider funnet", color = onSurfaceVariantDark, style = MaterialTheme.typography.titleLarge,)
+            Text(
+                "Ingen måltider funnet",
+                color = onSurfaceVariantDark,
+                style = MaterialTheme.typography.titleLarge,
+            )
         }
 
         else -> {
-            Column () {
-                Categories()
+            Column {
+                Categories(
+                    selected = selectedCategory,
+                    onSelected = { selectedCategory = it }
+                )
 
-                MealGrid(meals, onMealClick = { id ->
-                    selected = meals.firstOrNull { it._id == id }
-                })
+                MealGrid(
+                    meals = meals,
+                    onMealClick = { id -> selected = meals.firstOrNull { it._id == id } },
+                    categories = selectedCategory?.categories
+                )
 
                 selected?.let { meal ->
                     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -112,7 +123,19 @@ fun MealListScreenPreview() {
 }
 
 @Composable
-fun MealGrid(meals: List<Meal>, onMealClick: (String) -> Unit) {
+fun MealGrid(
+    meals: List<Meal>,
+    onMealClick: (String) -> Unit,
+    categories: List<String>? = null
+) {
+    val categorySet = remember(categories) {
+        categories?.map { it.lowercase() }?.toSet()
+    }
+
+    val filteredMeals = if (categorySet != null && categorySet.isNotEmpty()) {
+        meals.filter { m -> m.category.lowercase() in categorySet }
+    } else meals
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -123,7 +146,7 @@ fun MealGrid(meals: List<Meal>, onMealClick: (String) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(meals) { meal ->
+        items(filteredMeals) { meal ->
             val id = meal._id ?: return@items
             MealItemCard(meal) { onMealClick(id) }
         }
@@ -132,6 +155,8 @@ fun MealGrid(meals: List<Meal>, onMealClick: (String) -> Unit) {
 
 @Composable
 fun MealItemCard(meal: Meal, onClick: () -> Unit) {
+    val ctx = LocalContext.current
+    val resId = drawableIdFromApiPath(meal.image, ctx, fallback = R.drawable.placeholder)
 
     Card(
         modifier = Modifier
@@ -152,7 +177,7 @@ fun MealItemCard(meal: Meal, onClick: () -> Unit) {
             verticalArrangement = Arrangement.Center,
         ) {
             Image(
-                painter = painterResource(R.drawable.dessert),
+                painter = painterResource(resId),
                 contentDescription = meal.title,
                 modifier = Modifier
                     .size(120.dp)
@@ -192,6 +217,9 @@ fun MealItemCard(meal: Meal, onClick: () -> Unit) {
 
 @Composable
 fun MealDetailModal(meal: Meal, onClose: () -> Unit) {
+    val ctx = LocalContext.current
+    val resId = drawableIdFromApiPath(meal.image, ctx, fallback = R.drawable.placeholder)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -217,7 +245,7 @@ fun MealDetailModal(meal: Meal, onClose: () -> Unit) {
         Spacer(Modifier.height(12.dp))
 
         Image(
-            painter = painterResource(R.drawable.dessert),
+            painter = painterResource(resId),
             contentDescription = meal.title,
             modifier = Modifier
                 .fillMaxWidth()
@@ -252,10 +280,15 @@ fun MealDetailModal(meal: Meal, onClose: () -> Unit) {
             Spacer(Modifier.height(12.dp))
 
             meal.description?.takeIf { it.isNotBlank() }?.let {
-                Text(it, style = MaterialTheme.typography.bodyMedium, color = onSurfaceVariantDark, textAlign = TextAlign.Center)
+                Text(
+                    it,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = onSurfaceVariantDark,
+                    textAlign = TextAlign.Start
+                )
             }
         }
 
-
     }
 }
+

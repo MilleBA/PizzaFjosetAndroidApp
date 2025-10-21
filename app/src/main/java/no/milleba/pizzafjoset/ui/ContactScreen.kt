@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -42,7 +44,7 @@ import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
 fun ContactScreen() {
     val pos = LatLng(59.41243, 9.06126)
     val camera = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(pos, 14f)
+        position = CameraPosition.fromLatLngZoom(pos, 15f)
     }
 
     Column(
@@ -94,7 +96,10 @@ fun ContactScreen() {
         ) {
             GoogleMap(
                 cameraPositionState = camera,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                properties = MapProperties(
+                    mapType = MapType.HYBRID
+                )
             ) {
                 Marker(state = MarkerState(pos), title = "Pizza Fjoset")
             }

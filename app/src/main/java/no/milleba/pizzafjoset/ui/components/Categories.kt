@@ -21,7 +21,6 @@ import androidx.compose.material3.carousel.rememberCarouselState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,6 +37,23 @@ import no.milleba.pizzafjoset.R
 import no.milleba.pizzafjoset.ui.theme.PizzaFjosetAppTheme
 import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
 
+
+enum class Category(
+    val title: String,
+    val categories: List<String> = emptyList()
+) {
+    PIZZA("Pizza", listOf("pizza", "italian", "calzone")),
+    BURGER("Burger", listOf("burger", "burgerTuesday")),
+    SNACKS("Snacks", listOf("snacks")),
+    TOAST("Toast", listOf("toast", "sandwich")),
+    SALAT("Salat", listOf("salat")),
+    MEAT("Meat", listOf("texMex", "pasta", "aLaCarte")),
+    DESSERT("Dessert", listOf("desert")),
+    KIDS("Kids", listOf("kidmenu")),
+    DRINK("Drink", listOf("drink")),
+    EXTRA("Extra", listOf("extra"));
+}
+
 data class CarouselItem(
     val id: Int,
     @DrawableRes val imageRes: Int,
@@ -47,24 +63,26 @@ data class CarouselItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Categories() {
-
-    var selected by remember { mutableIntStateOf(0) }
-
+fun Categories(
+    selected: Category?,
+    onSelected: (Category) -> Unit
+) {
+    var cats = remember { Category.entries }
 
     val items = remember {
         listOf(
-            CarouselItem(0, R.drawable.pizza2, "Pizza", onSurfaceVariantDark),
-            CarouselItem(1, R.drawable.burger2, "Burger", onSurfaceVariantDark),
-            CarouselItem(2, R.drawable.cookie, "Snacks", onSurfaceVariantDark),
-            CarouselItem(3, R.drawable.toast, "Toast", onSurfaceVariantDark),
-            CarouselItem(4, R.drawable.meal_dinner, "Meat", onSurfaceVariantDark),
-            CarouselItem(5, R.drawable.grill, "BBQ", onSurfaceVariantDark),
-            CarouselItem(6, R.drawable.icecream, "Dessert", onSurfaceVariantDark),
-            CarouselItem(7, R.drawable.child, "Kids", onSurfaceVariantDark),
-            CarouselItem(8, R.drawable.coffee, "Drink", onSurfaceVariantDark),
-            CarouselItem(9, R.drawable.soup, "Extra", onSurfaceVariantDark),
-        )
+            CarouselItem(0, R.drawable.pizza2, Category.PIZZA.title, onSurfaceVariantDark),
+            CarouselItem(1, R.drawable.burger2, Category.BURGER.title, onSurfaceVariantDark),
+            CarouselItem(2, R.drawable.cookie, Category.SNACKS.title, onSurfaceVariantDark),
+            CarouselItem(3, R.drawable.toast, Category.TOAST.title, onSurfaceVariantDark),
+            CarouselItem(4, R.drawable.salat, Category.SALAT.title, onSurfaceVariantDark),
+            CarouselItem(5, R.drawable.meal_dinner, Category.MEAT.title, onSurfaceVariantDark),
+            CarouselItem(6, R.drawable.icecream, Category.DESSERT.title, onSurfaceVariantDark),
+            CarouselItem(7, R.drawable.child, Category.KIDS.title, onSurfaceVariantDark),
+            CarouselItem(8, R.drawable.coffee, Category.DRINK.title, onSurfaceVariantDark),
+            CarouselItem(9, R.drawable.soup, Category.EXTRA.title, onSurfaceVariantDark),
+
+            )
     }
 
     HorizontalUncontainedCarousel(
@@ -78,14 +96,15 @@ fun Categories() {
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) { i ->
         val item = items[i]
-        val isSelected = i == selected
+        val category = cats[i]
+        val isSelected = selected == category
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .padding(vertical = 4.dp)
-                .clickable { selected = i }
+                .clickable { onSelected(category) }
                 .alpha(if (isSelected) 1f else 0.5f)
         ) {
             Image(
@@ -113,6 +132,8 @@ fun Categories() {
 @Composable
 fun CategoriesPreview() {
     PizzaFjosetAppTheme {
-        Categories()
+        Categories(
+            selected = Category.PIZZA,
+            onSelected = {})
     }
 }
