@@ -1,5 +1,7 @@
 package no.milleba.pizzafjoset
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,8 +14,9 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -29,7 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -53,10 +57,10 @@ import no.milleba.pizzafjoset.ui.ContactScreen
 import no.milleba.pizzafjoset.ui.FavoritesScreen
 import no.milleba.pizzafjoset.ui.HomeScreen
 import no.milleba.pizzafjoset.ui.MealListScreen
+import no.milleba.pizzafjoset.ui.MealsViewModel
 import no.milleba.pizzafjoset.ui.OrderViewModel
 import no.milleba.pizzafjoset.ui.ProfileScreen
 import no.milleba.pizzafjoset.ui.theme.errorContainerDark
-import no.milleba.pizzafjoset.ui.theme.errorLightHighContrast
 import no.milleba.pizzafjoset.ui.theme.inverseOnSurfaceDark
 import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
 
@@ -220,8 +224,15 @@ fun PizzaFjosetTopAppBar(
 fun NavigationBottomBar(
     navController: NavHostController,
     currentScreen: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    orderViewModel: OrderViewModel
 ) {
+    val state by orderViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state.totalCount) {
+        Log.d("BottomBar", "badge = ${state.totalCount}")
+    }
+
 
     NavigationBar(modifier = modifier, windowInsets = NavigationBarDefaults.windowInsets) {
         NavigationBarItem(
@@ -267,11 +278,23 @@ fun NavigationBottomBar(
             onClick = { navController.navigate(Screen.Cart.route) },
             // label = { Text(stringResource(Screen.Cart.titleRes)) },
             icon = {
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = stringResource(R.string.cart),
-                    tint = onSurfaceVariantDark
-                )
+                BadgedBox(
+                    badge = {
+                        if (state.totalCount > 0) {
+                            Badge(
+                                containerColor = errorContainerDark,
+                                contentColor = onSurfaceVariantDark
+                            ) { Text("${state.totalCount}") }
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ShoppingCart,
+                        contentDescription = stringResource(R.string.cart),
+                        tint = onSurfaceVariantDark
+                    )
+                }
+
             }
         )
     }
@@ -280,9 +303,11 @@ fun NavigationBottomBar(
 
 @Composable
 fun PizzaFjosetApp(
-    viewModel: OrderViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
+    val orderViewModel: OrderViewModel = viewModel()
+    val mealViewModel: MealsViewModel = viewModel()
+
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: Screen.Meals.route
     val screenForRoute = remember {
@@ -312,7 +337,7 @@ fun PizzaFjosetApp(
             )
         },
         bottomBar = {
-            NavigationBottomBar(navController, currentScreen.route)
+            NavigationBottomBar(navController, currentScreen.route, orderViewModel = orderViewModel)
         }
 
     ) { innerPadding ->
@@ -328,18 +353,17 @@ fun PizzaFjosetApp(
                 HomeScreen()
             }
             composable(Screen.Meals.route) {
-                val uiState by viewModel.uiState.collectAsState()
-                MealListScreen()
+                MealListScreen(orderViewModel, mealViewModel)
             }
             composable(Screen.Profile.route) {
-                ProfileScreen()
+                ProfileScreen(orderViewModel)
             }
             composable(Screen.Favorites.route) {
-                FavoritesScreen()
+                FavoritesScreen(orderViewModel)
             }
 
             composable(Screen.Cart.route) {
-                CartScreen()
+                CartScreen(orderViewModel)
             }
 
             composable(Screen.Checkout.route) {

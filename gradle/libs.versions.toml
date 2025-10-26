@@ -1,5 +1,6 @@
 [versions]
 # Build-related plugins
+accompanistPermissions = "0.37.3"
 secrets-gradle-plugin = "2.0.1"
 # Google Maps
 maps-compose = "6.10.0"
@@ -37,6 +38,7 @@ appcompat = "1.7.1"
 constraintlayout = "2.2.1"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-compose-bom-v20250100 = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
 androidx-compose-bom-v20250901 = { module = "androidx.compose:compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }

@@ -5,14 +5,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.milleba.pizzafjoset.ui.theme.PizzaFjosetAppTheme
 import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
 
 @Composable
-fun CartScreen() {
+fun CartScreen(orderViewModel: OrderViewModel) {
+    val state by orderViewModel.uiState.collectAsStateWithLifecycle()
+    // state.items -> Map<id, qty>
+    // state.totalPrice, state.selectedDate, state.pickupOptions
+
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -25,10 +32,13 @@ fun CartScreen() {
         )
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun CartScreenPreview() {
     PizzaFjosetAppTheme {
-        CartScreen()
+        val vm = remember { OrderViewModel() }
+        CartScreen(orderViewModel = vm)
     }
 }
+

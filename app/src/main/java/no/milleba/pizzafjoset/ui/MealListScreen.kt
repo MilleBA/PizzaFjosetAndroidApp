@@ -1,5 +1,6 @@
 package no.milleba.pizzafjoset.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,15 +47,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.milleba.pizzafjoset.R
-import no.milleba.pizzafjoset.data.RetrofitClient
 import no.milleba.pizzafjoset.model.Meal
 import no.milleba.pizzafjoset.ui.components.AddButton
 import no.milleba.pizzafjoset.ui.components.Categories
-import no.milleba.pizzafjoset.ui.components.Category
-import no.milleba.pizzafjoset.ui.theme.PizzaFjosetAppTheme
 import no.milleba.pizzafjoset.ui.theme.errorContainerDark
 import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
 import no.milleba.pizzafjoset.ui.theme.primaryDarkMediumContrast
@@ -64,39 +62,41 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MealListScreen(
+    orderViewModel: OrderViewModel,
+    mealsViewModel: MealsViewModel
 ) {
-    var meals by remember { mutableStateOf<List<Meal>>(emptyList()) }
-    var error by remember { mutableStateOf<String?>(null) }
-    var selected by remember { mutableStateOf<Meal?>(null) }
-    var selectedCategory by remember { mutableStateOf<Category?>(Category.PIZZA) }
-
-    LaunchedEffect(Unit) {
-        runCatching { RetrofitClient.mealApi.getMeals() }
-            .onSuccess { resp -> meals = resp.meals }
-            .onFailure { e -> error = e.message }
-    }
+    val ui by mealsViewModel.ui.collectAsStateWithLifecycle()
 
     when {
-        error != null -> Text("Feil: $error")
-        meals.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        ui.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
-                "Ingen måltider funnet",
+                "Loading…",
                 color = onSurfaceVariantDark,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleLarge
             )
         }
 
+        ui.error != null -> Text("Error: ${ui.error}")
         else -> {
+            var selected by remember { mutableStateOf<Meal?>(null) }
+
             Column {
                 Categories(
-                    selected = selectedCategory,
-                    onSelected = { selectedCategory = it }
+                    selected = ui.selectedCategory,
+                    onSelected = { mealsViewModel.selectCategory(it) }
                 )
 
+                val filtered by remember(ui.meals, ui.selectedCategory) {
+                    val cats = ui.selectedCategory?.categories?.map { it.lowercase() }?.toSet()
+                    mutableStateOf(
+                        if (cats.isNullOrEmpty()) ui.meals
+                        else ui.meals.filter { it.category.lowercase() in cats }
+                    )
+                }
+
                 MealGrid(
-                    meals = meals,
-                    onMealClick = { id -> selected = meals.firstOrNull { it._id == id } },
-                    categories = selectedCategory?.categories
+                    meals = filtered,
+                    onMealClick = { id -> selected = ui.meals.firstOrNull { it._id == id } }
                 )
 
                 selected?.let { meal ->
@@ -105,20 +105,15 @@ fun MealListScreen(
                         onDismissRequest = { selected = null },
                         sheetState = sheetState
                     ) {
-                        MealDetailModal(meal, onClose = { selected = null })
+                        MealDetailModal(
+                            meal,
+                            onClose = { selected = null },
+                            orderViewModel = orderViewModel
+                        )
                     }
                 }
             }
-
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MealListScreenPreview() {
-    PizzaFjosetAppTheme {
-        MealListScreen()
     }
 }
 
@@ -216,9 +211,11 @@ fun MealItemCard(meal: Meal, onClick: () -> Unit) {
 }
 
 @Composable
-fun MealDetailModal(meal: Meal, onClose: () -> Unit) {
+fun MealDetailModal(meal: Meal, onClose: () -> Unit, orderViewModel: OrderViewModel) {
     val ctx = LocalContext.current
     val resId = drawableIdFromApiPath(meal.image, ctx, fallback = R.drawable.placeholder)
+    val state by orderViewModel.uiState.collectAsStateWithLifecycle()
+
 
     Column(
         modifier = Modifier
@@ -274,7 +271,12 @@ fun MealDetailModal(meal: Meal, onClose: () -> Unit) {
                         fontWeight = FontWeight.Bold
                     )
                 }
-                AddButton(canAddMeal = true, onClick = { /*TODO*/ })
+                AddButton(canAddMeal = true, onClick = { orderViewModel.add(meal) })
+
+                LaunchedEffect(state.totalCount) {
+                    Log.d("MealDetailModal", "count = ${state.totalCount}")
+                    Log.d("MealDetailModal", "state = $state")
+                }
             }
 
             Spacer(Modifier.height(12.dp))
@@ -291,4 +293,5 @@ fun MealDetailModal(meal: Meal, onClose: () -> Unit) {
 
     }
 }
+
 

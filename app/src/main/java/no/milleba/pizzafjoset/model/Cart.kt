@@ -1,6 +1,6 @@
 package no.milleba.pizzafjoset.model
 
-data class Cart (
+data class CartItem (
     val _id: String? = null,
     val itemTitle: String,
     val category: String,
@@ -8,5 +8,7 @@ data class Cart (
     val image: String?,
     val price: Double? = null,
     val priceBig: Double? = null,
-    val priceSmall: Double? = null
+    val priceSmall: Double? = null,
+    val quantity: Int
+
 )

@@ -1,13 +1,11 @@
 package no.milleba.pizzafjoset.data
 
-import no.milleba.pizzafjoset.model.Meal
-
 data class OrderUiState(
-    val meals: List<Meal> = emptyList(),
-    val quantity: Int = 0,
-    val date: String = "",
-    val price: Double = 0.0,
-    val pickupOptions: List<String> = listOf()
+    val items: Map<String, Int> = emptyMap(),
+    val totalCount: Int = 0,
+    val totalPrice: Double = 0.0,
+    val selectedDate: String? = null,
+    val pickupOptions: List<String> = emptyList()
 ) {
 
 }

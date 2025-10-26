@@ -1,7 +1,11 @@
 package no.milleba.pizzafjoset.model
 
 import okhttp3.ResponseBody
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 
 data class Meal(
     val _id: String? = null,
@@ -27,5 +31,15 @@ interface MealApi {
     suspend fun createMeal(@Body meal: Meal): ResponseBody
 
     @DELETE("api/meals/{_id}")
-    suspend fun deleteMeal(@Query("_id") id: String): ResponseBody
+    suspend fun deleteMeal(@Path("_id") id: String): ResponseBody
+}
+
+interface MealsRepository {
+    suspend fun getMeals(): List<Meal>
+}
+
+class MealsRepositoryImpl(
+    private val api: MealApi
+) : MealsRepository {
+    override suspend fun getMeals(): List<Meal> = api.getMeals().meals
 }
