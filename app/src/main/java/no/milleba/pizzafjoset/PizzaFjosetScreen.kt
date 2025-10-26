@@ -1,6 +1,5 @@
 package no.milleba.pizzafjoset
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,15 +50,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import no.milleba.pizzafjoset.ui.AboutScreen
-import no.milleba.pizzafjoset.ui.CartScreen
-import no.milleba.pizzafjoset.ui.ContactScreen
-import no.milleba.pizzafjoset.ui.FavoritesScreen
-import no.milleba.pizzafjoset.ui.HomeScreen
-import no.milleba.pizzafjoset.ui.MealListScreen
-import no.milleba.pizzafjoset.ui.MealsViewModel
-import no.milleba.pizzafjoset.ui.OrderViewModel
-import no.milleba.pizzafjoset.ui.ProfileScreen
+import no.milleba.pizzafjoset.ui.screens.AboutScreen
+import no.milleba.pizzafjoset.ui.screens.CartScreen
+import no.milleba.pizzafjoset.ui.screens.ContactScreen
+import no.milleba.pizzafjoset.ui.screens.FavoritesScreen
+import no.milleba.pizzafjoset.ui.screens.HomeScreen
+import no.milleba.pizzafjoset.ui.screens.MealListScreen
+import no.milleba.pizzafjoset.ui.viewModels.MealsViewModel
+import no.milleba.pizzafjoset.ui.viewModels.OrderViewModel
+import no.milleba.pizzafjoset.ui.screens.ProfileScreen
 import no.milleba.pizzafjoset.ui.theme.errorContainerDark
 import no.milleba.pizzafjoset.ui.theme.inverseOnSurfaceDark
 import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark

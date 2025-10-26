@@ -1,4 +1,4 @@
-package no.milleba.pizzafjoset.ui
+package no.milleba.pizzafjoset.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import no.milleba.pizzafjoset.R
 import no.milleba.pizzafjoset.ui.theme.PizzaFjosetAppTheme
-import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
 
 @Composable
 fun HomeScreen() {

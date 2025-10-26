@@ -1,4 +1,4 @@
-package no.milleba.pizzafjoset.ui
+package no.milleba.pizzafjoset.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,7 +14,6 @@ import no.milleba.pizzafjoset.model.Order
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-
 
 class OrderViewModel : ViewModel() {
     private val _items = MutableStateFlow<Map<String, Int>>(emptyMap())
@@ -37,7 +36,7 @@ class OrderViewModel : ViewModel() {
             )
         }.stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5_000),
+            SharingStarted.Companion.WhileSubscribed(5_000),
             OrderUiState(pickupOptions = _pickupOptions)
         )
 
@@ -99,4 +98,3 @@ class OrderViewModel : ViewModel() {
 
 
 }
-

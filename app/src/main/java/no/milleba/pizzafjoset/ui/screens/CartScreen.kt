@@ -1,4 +1,4 @@
-package no.milleba.pizzafjoset.ui
+package no.milleba.pizzafjoset.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,10 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.milleba.pizzafjoset.ui.theme.PizzaFjosetAppTheme
 import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
+import no.milleba.pizzafjoset.ui.viewModels.OrderViewModel
 
 @Composable
-fun FavoritesScreen(orderViewModel: OrderViewModel) {
+fun CartScreen(orderViewModel: OrderViewModel) {
     val state by orderViewModel.uiState.collectAsStateWithLifecycle()
+    // state.items -> Map<id, qty>
+    // state.totalPrice, state.selectedDate, state.pickupOptions
 
     Box(
         modifier = Modifier
@@ -24,7 +27,7 @@ fun FavoritesScreen(orderViewModel: OrderViewModel) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Favorites Screen",
+            text = "Cart Screen",
             style = MaterialTheme.typography.titleLarge,
             color = onSurfaceVariantDark
         )
@@ -33,9 +36,10 @@ fun FavoritesScreen(orderViewModel: OrderViewModel) {
 
 @Preview(showBackground = true)
 @Composable
-fun FavoritesScreenPreview() {
+fun CartScreenPreview() {
     PizzaFjosetAppTheme {
         val vm = remember { OrderViewModel() }
-        FavoritesScreen(orderViewModel = vm)
+        CartScreen(orderViewModel = vm)
     }
 }
+

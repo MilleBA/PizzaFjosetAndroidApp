@@ -1,4 +1,4 @@
-package no.milleba.pizzafjoset.ui
+package no.milleba.pizzafjoset.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

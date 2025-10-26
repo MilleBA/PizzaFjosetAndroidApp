@@ -1,4 +1,4 @@
-package no.milleba.pizzafjoset.ui
+package no.milleba.pizzafjoset.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -57,6 +57,8 @@ import no.milleba.pizzafjoset.ui.theme.errorContainerDark
 import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
 import no.milleba.pizzafjoset.ui.theme.primaryDarkMediumContrast
 import no.milleba.pizzafjoset.ui.utils.drawableIdFromApiPath
+import no.milleba.pizzafjoset.ui.viewModels.MealsViewModel
+import no.milleba.pizzafjoset.ui.viewModels.OrderViewModel
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)

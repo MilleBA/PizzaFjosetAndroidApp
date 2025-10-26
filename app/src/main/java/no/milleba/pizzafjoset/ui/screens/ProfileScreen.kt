@@ -1,4 +1,4 @@
-package no.milleba.pizzafjoset.ui
+package no.milleba.pizzafjoset.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,6 +38,7 @@ import no.milleba.pizzafjoset.ui.theme.PizzaFjosetAppTheme
 import no.milleba.pizzafjoset.ui.theme.errorContainerDark
 import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
 import no.milleba.pizzafjoset.ui.theme.scrimLightMediumContrast
+import no.milleba.pizzafjoset.ui.viewModels.OrderViewModel
 
 @Composable
 fun ProfileScreen(orderViewModel: OrderViewModel) {

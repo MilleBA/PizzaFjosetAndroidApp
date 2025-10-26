@@ -1,4 +1,4 @@
-package no.milleba.pizzafjoset.ui
+package no.milleba.pizzafjoset.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
