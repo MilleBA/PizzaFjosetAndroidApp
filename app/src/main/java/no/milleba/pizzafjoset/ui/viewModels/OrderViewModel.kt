@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -18,7 +19,8 @@ import java.util.Locale
 class OrderViewModel : ViewModel() {
     private val _items = MutableStateFlow<Map<String, Int>>(emptyMap())
     private val _selectedDate = MutableStateFlow<String?>(null)
-    private val mealsById = MutableStateFlow<Map<String, Meal>>(emptyMap())
+    private val _mealsById = MutableStateFlow<Map<String, Meal>>(emptyMap())
+    val mealsById: StateFlow<Map<String, Meal>> = _mealsById.asStateFlow()
     private val _pickupOptions = pickupOptions()
 
     val uiState: StateFlow<OrderUiState> =
@@ -36,13 +38,13 @@ class OrderViewModel : ViewModel() {
             )
         }.stateIn(
             viewModelScope,
-            SharingStarted.Companion.WhileSubscribed(5_000),
+            SharingStarted.WhileSubscribed(5_000),
             OrderUiState(pickupOptions = _pickupOptions)
         )
 
 
     fun setCatalog(meals: List<Meal>) {
-        mealsById.value = meals.associateBy { requireNotNull(it._id) }
+        _mealsById.value = meals.mapNotNull { m -> m._id?.let { it to m } }.toMap()
     }
 
     fun add(meal: Meal) {
@@ -71,8 +73,10 @@ class OrderViewModel : ViewModel() {
 
     fun toOrder(): Order {
         val catalog = mealsById.value
-        val mealsList: List<Meal> =
-            _items.value.flatMap { (id, qty) -> List(qty) { catalog.getValue(id) } }
+        val mealsList = _items.value.flatMap { (id, qty) ->
+            val meal = catalog[id] ?: return@flatMap emptyList()
+            List(qty) { meal }
+        }
         return Order(cart = mealsList)
     }
 
@@ -95,6 +99,5 @@ class OrderViewModel : ViewModel() {
     fun clearCart() {
         _items.value = emptyMap()
     }
-
 
 }

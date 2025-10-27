@@ -69,6 +69,12 @@ fun MealListScreen(
 ) {
     val ui by mealsViewModel.ui.collectAsStateWithLifecycle()
 
+    LaunchedEffect(ui.meals) {
+        if (ui.meals.isNotEmpty()) {
+            orderViewModel.setCatalog(ui.meals)
+        }
+    }
+
     when {
         ui.loading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
