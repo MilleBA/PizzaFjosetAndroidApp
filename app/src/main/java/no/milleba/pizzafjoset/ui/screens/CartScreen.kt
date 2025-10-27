@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import no.milleba.pizzafjoset.R
 import no.milleba.pizzafjoset.model.CartItem
 import no.milleba.pizzafjoset.model.Meal
+import no.milleba.pizzafjoset.ui.components.AddButton
 import no.milleba.pizzafjoset.ui.components.RemoveButton
 import no.milleba.pizzafjoset.ui.theme.PizzaFjosetAppTheme
 import no.milleba.pizzafjoset.ui.theme.errorContainerDark
@@ -59,7 +60,11 @@ fun CartScreen(orderViewModel: OrderViewModel) {
         }
     }
 
-    Cart(items = items, subtotal = state.totalPrice, onRemove = { orderViewModel.removeOne(it) })
+    Cart(
+        items = items,
+        subtotal = state.totalPrice,
+        onAdd = { orderViewModel.add(it) },
+        onRemove = { orderViewModel.removeOne(it) })
 }
 
 @Preview(showBackground = true)
@@ -73,7 +78,7 @@ fun CartScreenPreview() {
 
 
 @Composable
-fun Cart(items: List<CartItem>, subtotal: Double, onRemove: (Meal) -> Unit) {
+fun Cart(items: List<CartItem>, subtotal: Double, onAdd: (Meal) -> Unit, onRemove: (Meal) -> Unit) {
     val kr = java.text.NumberFormat.getCurrencyInstance(java.util.Locale("nb", "NO"))
 
     Column(
@@ -148,6 +153,7 @@ fun Cart(items: List<CartItem>, subtotal: Double, onRemove: (Meal) -> Unit) {
                                 text = "Antall ${item.quantity}",
                                 style = TextStyle(color = onSurfaceVariantDark)
                             )
+                            AddButton(canAddMeal = true, onClick = { onAdd(item.meal) })
                             RemoveButton(canRemoveMeal = true, onClick = { onRemove(item.meal) })
 
                         }
