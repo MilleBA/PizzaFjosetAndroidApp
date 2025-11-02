@@ -1,8 +1,11 @@
 package no.milleba.pizzafjoset.ui.screens
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -26,42 +30,82 @@ import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
 
 @Composable
 fun AboutScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp, vertical = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
-        Box(
+    if (isLandscape) {
+        Row(
             modifier = Modifier
-                .weight(1f)
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
 
-            Image(
-                painter = painterResource(R.drawable.ute),
-                contentDescription = "Pizza Fjoset photo",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.Center
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
+            ) {
+
+                Image(
+                    painter = painterResource(R.drawable.ute),
+                    contentDescription = "Pizza Fjoset photo",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.Center
+                )
+            }
+
+            Text(
+                text = stringResource(R.string.about_pizza_fjoset),
+                style = MaterialTheme.typography.titleSmall,
+                color = onSurfaceVariantDark,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .weight(1f)
             )
         }
 
-        Text(
-            text = stringResource(R.string.about_pizza_fjoset),
-            style = MaterialTheme.typography.titleMedium,
-            color = onSurfaceVariantDark,
-            textAlign = TextAlign.Center,
+    } else {
+        Column(
             modifier = Modifier
-                .padding(vertical = 16.dp)
-                .width(300.dp)
-        )
+                .fillMaxSize()
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
 
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
+            ) {
+
+                Image(
+                    painter = painterResource(R.drawable.ute),
+                    contentDescription = "Pizza Fjoset photo",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.Center
+                )
+            }
+
+            Text(
+                text = stringResource(R.string.about_pizza_fjoset),
+                style = MaterialTheme.typography.titleMedium,
+                color = onSurfaceVariantDark,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .width(300.dp)
+            )
+        }
 
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun AboutScreenPreview() {
