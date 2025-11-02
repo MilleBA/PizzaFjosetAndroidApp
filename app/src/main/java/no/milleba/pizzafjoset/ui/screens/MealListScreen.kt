@@ -1,6 +1,5 @@
 package no.milleba.pizzafjoset.ui.screens
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -65,10 +63,9 @@ import kotlin.math.roundToInt
 @Composable
 fun MealListScreen(
     orderViewModel: OrderViewModel,
-    mealsViewModel: MealsViewModel
+    mealsViewModel: MealsViewModel,
+    isLandscape: Boolean = false
 ) {
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
     val ui by mealsViewModel.ui.collectAsStateWithLifecycle()
 
     LaunchedEffect(ui.meals) {

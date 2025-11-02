@@ -41,9 +41,7 @@ import no.milleba.pizzafjoset.ui.theme.PizzaFjosetAppTheme
 import no.milleba.pizzafjoset.ui.theme.onSurfaceVariantDark
 
 @Composable
-fun ContactScreen() {
-    val configuration = LocalConfiguration.current
-    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+fun ContactScreen(isLandscape: Boolean = false) {
 
     if (isLandscape) {
         Row(

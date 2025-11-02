@@ -1,5 +1,6 @@
 package no.milleba.pizzafjoset
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -324,6 +326,8 @@ fun PizzaFjosetApp(
         )
     }
     val currentScreen = screenForRoute[currentRoute] ?: Screen.Meals
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
     Scaffold(
         topBar = {
@@ -352,10 +356,10 @@ fun PizzaFjosetApp(
                 HomeScreen()
             }
             composable(Screen.Meals.route) {
-                MealListScreen(orderViewModel, mealViewModel)
+                MealListScreen(orderViewModel, mealViewModel, isLandscape)
             }
             composable(Screen.Profile.route) {
-                ProfileScreen(orderViewModel)
+                ProfileScreen(orderViewModel, isLandscape)
             }
             composable(Screen.Favorites.route) {
                 FavoritesScreen(orderViewModel)
@@ -374,11 +378,11 @@ fun PizzaFjosetApp(
             }
 
             composable(Screen.Contact.route) {
-                ContactScreen()
+                ContactScreen(isLandscape)
             }
 
             composable(Screen.About.route) {
-                AboutScreen()
+                AboutScreen(isLandscape)
             }
         }
 
