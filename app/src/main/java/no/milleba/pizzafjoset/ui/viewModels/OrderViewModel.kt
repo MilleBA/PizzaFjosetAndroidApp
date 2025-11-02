@@ -18,9 +18,13 @@ import java.util.Locale
 
 class OrderViewModel : ViewModel() {
     private val _items = MutableStateFlow<Map<String, Int>>(emptyMap())
+
     private val _selectedDate = MutableStateFlow<String?>(null)
     private val _mealsById = MutableStateFlow<Map<String, Meal>>(emptyMap())
     val mealsById: StateFlow<Map<String, Meal>> = _mealsById.asStateFlow()
+
+    private val _favoriteIds = MutableStateFlow<Set<String>>(emptySet())
+    val favoriteIds: StateFlow<Set<String>> = _favoriteIds.asStateFlow()
     private val _pickupOptions = pickupOptions()
 
     val uiState: StateFlow<OrderUiState> =
@@ -41,6 +45,11 @@ class OrderViewModel : ViewModel() {
             SharingStarted.WhileSubscribed(5_000),
             OrderUiState(pickupOptions = _pickupOptions)
         )
+
+    val favorites: StateFlow<List<Meal>> =
+        favoriteIds.combine(mealsById) { ids, catalog ->
+            ids.mapNotNull { catalog[it] }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
 
     fun setCatalog(meals: List<Meal>) {
@@ -70,6 +79,22 @@ class OrderViewModel : ViewModel() {
         }
     }
 
+    fun addFavorite(meal: Meal) {
+        val id = meal._id ?: return
+        _favoriteIds.update { it + id }
+    }
+
+    fun removeFavorite(meal: Meal) {
+        val id = meal._id ?: return
+        _favoriteIds.update { it - id }
+    }
+
+    fun toggleFavorite(meal: Meal) {
+        val id = meal._id ?: return
+        _favoriteIds.update { set -> if (id in set) set - id else set + id }
+    }
+
+    fun isFavorite(id: String?): Boolean = id != null && id in _favoriteIds.value
 
     fun toOrder(): Order {
         val catalog = mealsById.value
