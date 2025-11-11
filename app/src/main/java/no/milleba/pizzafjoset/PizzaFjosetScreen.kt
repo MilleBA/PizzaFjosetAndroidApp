@@ -353,7 +353,7 @@ fun PizzaFjosetApp(
                 .padding(innerPadding)
         ) {
             composable(Screen.Home.route) {
-                HomeScreen()
+                HomeScreen(isLandscape)
             }
             composable(Screen.Meals.route) {
                 MealListScreen(orderViewModel, mealViewModel, isLandscape)

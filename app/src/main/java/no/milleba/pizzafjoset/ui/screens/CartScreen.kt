@@ -86,7 +86,7 @@ fun Cart(items: List<CartItem>, subtotal: Double, onAdd: (Meal) -> Unit, onRemov
             .fillMaxSize()
     ) {
 
-        LazyColumn(Modifier.height(600.dp)) {
+        LazyColumn(modifier = Modifier.weight(1f) ) {
             itemsIndexed(items) { i, item ->
                 Row(
                     modifier = Modifier
@@ -153,7 +153,10 @@ fun Cart(items: List<CartItem>, subtotal: Double, onAdd: (Meal) -> Unit, onRemov
                                 text = "Antall ${item.quantity}",
                                 style = TextStyle(color = onSurfaceVariantDark)
                             )
-                            AddButton(canAddMeal = true, onClick = { onAdd(item.meal) })
+                            AddButton(
+                                meal = item.meal,
+                                canAddMeal = true,
+                                onClick = { onAdd(item.meal) })
                             RemoveButton(canRemoveMeal = true, onClick = { onRemove(item.meal) })
 
                         }

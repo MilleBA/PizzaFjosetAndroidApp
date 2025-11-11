@@ -79,22 +79,10 @@ class OrderViewModel : ViewModel() {
         }
     }
 
-    fun addFavorite(meal: Meal) {
-        val id = meal._id ?: return
-        _favoriteIds.update { it + id }
-    }
-
-    fun removeFavorite(meal: Meal) {
-        val id = meal._id ?: return
-        _favoriteIds.update { it - id }
-    }
-
     fun toggleFavorite(meal: Meal) {
         val id = meal._id ?: return
         _favoriteIds.update { set -> if (id in set) set - id else set + id }
     }
-
-    fun isFavorite(id: String?): Boolean = id != null && id in _favoriteIds.value
 
     fun toOrder(): Order {
         val catalog = mealsById.value

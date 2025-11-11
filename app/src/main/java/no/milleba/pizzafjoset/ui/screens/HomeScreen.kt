@@ -18,33 +18,42 @@ import no.milleba.pizzafjoset.R
 import no.milleba.pizzafjoset.ui.theme.PizzaFjosetAppTheme
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(isLandscape: Boolean = false) {
     Box(modifier = Modifier.fillMaxSize()) {
 
-        Image(
-            painter = painterResource(id = R.drawable.burgertirsdag),
-            contentDescription = "Background Image",
-            contentScale = ContentScale.FillHeight,
-            modifier = Modifier.fillMaxSize()
-        )
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp, vertical = 120.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-
-        ) {
-
+        if (isLandscape) {
             Image(
-                painter = painterResource(R.drawable.logo3),
-                contentDescription = stringResource(R.string.app_name),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                contentScale = ContentScale.Crop
+                painter = painterResource(id = R.drawable.b2),
+                contentDescription = "Background Image",
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.burgertirsdag),
+                contentDescription = "Background Image",
+                contentScale = ContentScale.FillHeight,
+                modifier = Modifier.fillMaxSize()
             )
 
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp, vertical = 120.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+
+            ) {
+
+                Image(
+                    painter = painterResource(R.drawable.logo3),
+                    contentDescription = stringResource(R.string.app_name),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentScale = ContentScale.Crop
+                )
+
+            }
         }
     }
 }

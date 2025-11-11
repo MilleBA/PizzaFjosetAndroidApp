@@ -1,5 +1,6 @@
 package no.milleba.pizzafjoset.ui.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.core.net.toUri
 import no.milleba.pizzafjoset.R
@@ -29,6 +30,7 @@ private val NAME_MAP = mapOf(
 
     )
 
+@SuppressLint("DiscouragedApi")
 fun drawableIdFromApiPath(path: String?, context: Context, fallback: Int): Int {
     if (path.isNullOrBlank()) return fallback
 

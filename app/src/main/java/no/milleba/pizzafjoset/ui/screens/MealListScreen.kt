@@ -209,6 +209,7 @@ fun MealItemCard(meal: Meal, orderViewModel: OrderViewModel, isLandscape: Boolea
                     }
 
                     AddButton(
+                        meal = meal,
                         canAddMeal = true,
                         onClick = { orderViewModel.add(meal) }
                     )
@@ -315,6 +316,7 @@ fun MealItemCard(meal: Meal, orderViewModel: OrderViewModel, isLandscape: Boolea
                         }
 
                         AddButton(
+                            meal = meal,
                             canAddMeal = true,
                             onClick = { orderViewModel.add(meal) }
                         )

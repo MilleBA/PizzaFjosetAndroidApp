@@ -1,6 +1,5 @@
 package no.milleba.pizzafjoset.ui.screens
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -22,19 +22,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.unit.sp
 import no.milleba.pizzafjoset.R
 import no.milleba.pizzafjoset.ui.theme.PizzaFjosetAppTheme
 import no.milleba.pizzafjoset.ui.theme.errorContainerDark
@@ -45,9 +44,59 @@ import no.milleba.pizzafjoset.ui.viewModels.OrderViewModel
 @Composable
 fun ProfileScreen(orderViewModel: OrderViewModel, isLandscape: Boolean = false) {
 
-    val state by orderViewModel.uiState.collectAsStateWithLifecycle()
+    // val state by orderViewModel.uiState.collectAsStateWithLifecycle()
 
     if (isLandscape) {
+        Box(modifier = Modifier.fillMaxSize()) {
+
+            Image(
+                painter = painterResource(id = R.drawable.b2),
+                contentDescription = "Background Image",
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier.fillMaxSize()
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Image(
+                    painter = painterResource(id = R.drawable.a),
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(onSurfaceVariantDark)
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+                Row(
+                    modifier = Modifier.background(color = Color.Black),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Mille Brekke Amundsen",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
+                        fontSize = 28.sp,
+                        color = errorContainerDark,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Text(
+                        text = "Bakåskollen 9, Bø i Telemark, 3803",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontSize = 23.sp,
+                        color = onSurfaceVariantDark,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
 
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
